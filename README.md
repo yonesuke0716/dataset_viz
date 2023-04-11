@@ -10,6 +10,6 @@ streamlit run dataset_viz.py
 
 $ docker build -t dataset_viz .
 
-$ docker run --rm　-v $(pwd):/app -p 8501:8501 -it dataset_viz
+$ docker run --rm -v $(pwd):/app -p 8501:8501 -it dataset_viz
 
 http://localhost:8501/
