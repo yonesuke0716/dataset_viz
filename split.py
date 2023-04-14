@@ -1,17 +1,9 @@
 import pandas as pd
-import streamlit as st
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
 
 
-# データ読み込み
-@st.cache_resource
-def load_data():
-    data = pd.read_csv("sample.csv")
-    return data
-
-
-# 分割パラメータ設定
+# hold_out法
 def hold_out(st, df):
     test_rate = st.number_input(
         "test_sizeを指定(0.0~1.0)", min_value=0.0, max_value=1.0, value=0.25
@@ -45,7 +37,7 @@ def hold_out(st, df):
     return df_train, df_test
 
 
-# 分割パラメータ設定
+# K-分割交差検証
 def kfold(st, df):
     n_splits = st.number_input("n_splitsを指定(2~10)", min_value=2, max_value=10, value=5)
     is_shuffle = st.checkbox("データをシャッフルするか？")
@@ -68,3 +60,6 @@ def kfold(st, df):
     n_fold = st.selectbox("何番目の分割データを見るか？", range(len(df_train_list)))
 
     return df_train_list[n_fold], df_test_list[n_fold]
+
+
+# 層化K-分割交差検証

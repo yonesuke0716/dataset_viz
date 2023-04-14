@@ -2,7 +2,7 @@ import streamlit as st
 import seaborn as sns
 
 from draw import px_draw
-from design import hold_out, kfold
+from split import hold_out, kfold
 
 
 def main():
@@ -19,13 +19,17 @@ def main():
     )
 
     # ********* contents *********
-    st.title("Dataset Checker")
-    st.subheader("All data")
+    st.title("Dataset Design Page")
+    st.subheader("All Dataset")
+    st.write("読み込んだ全てのデータセットをデータフレームで表示")
     st.write(df)
-    st.markdown("##### describe")
+    st.subheader("All Describe")
+    st.write("読み込んだ全てのデータセットの統計量を表示")
     st.write(df.describe())
 
     # Allのヒストグラム
+    st.subheader("All Histgram")
+    st.write("読み込んだ全てのデータセットのヒストグラムを表示")
     px_draw(
         df,
         x_axis=x_axis,
@@ -37,6 +41,8 @@ def main():
         width=700,
     )
     # Allの散布図
+    st.subheader("All Scatter")
+    st.write("読み込んだ全てのデータセットの散布図を表示")
     px_draw(
         df,
         x_axis,
@@ -53,6 +59,7 @@ def main():
         pass
     else:
         st.subheader("Split data")
+        st.write("train/test split用のパラメータを設定")
         if select_method == "hold_out":
             df_train, df_test = hold_out(st, df)
         elif select_method == "KFold":
@@ -93,7 +100,7 @@ def main():
 if __name__ == "__main__":
     st.set_page_config(
         page_title="Dataset_Checker",
-        page_icon="✅",
+        page_icon="🧑‍💻",
         layout="wide",
         initial_sidebar_state="auto",
         menu_items={
