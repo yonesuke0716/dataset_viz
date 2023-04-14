@@ -1,3 +1,5 @@
+import os
+import pandas as pd
 import streamlit as st
 import seaborn as sns
 
@@ -7,8 +9,25 @@ from split import hold_out, kfold
 
 def main():
     # ********* read dataset *********
-    df = sns.load_dataset("iris")
+    # datasetフォルダからcsvファイルを読み込む
+    csv_files = os.listdir("dataset")
+    csv_files = [csv_file for csv_file in csv_files if csv_file.endswith(".csv")]
+    csv_file = st.multiselect("読み込むcsvファイルを選択", csv_files, csv_files[0])
+    if len(csv_file) == 0:
+        st.error("csvファイルがありません")
+        return
+    df = pd.DataFrame()
+    for file in csv_file:
+        df = pd.concat([df, pd.read_csv(f"dataset/{file}")])
+    # indexを振り直す
+    df = df.reset_index(drop=True)
+
+    # snsのirisデータセットを読み込む
+    # df = sns.load_dataset("iris")
     column_names = list(df.columns)
+    # ********* augmentation *********
+    st.subheader("Augmentation")
+    st.write("データセットに前処理(かさ増し)を行う")
 
     # ********* sidebar *********
     st.sidebar.subheader("graph_config")
@@ -19,7 +38,6 @@ def main():
     )
 
     # ********* contents *********
-    st.title("Dataset Design Page")
     st.subheader("All Dataset")
     st.write("読み込んだ全てのデータセットをデータフレームで表示")
     st.write(df)
@@ -52,6 +70,16 @@ def main():
         color="species",
         width=700,
     )
+    # dataframeをcsvファイルで出力する
+    st.subheader("Dataset to csv")
+    csv_name = st.text_input("出力するcsvファイル名を入力してください", value="sample.csv")
+    if st.button("Dataset to csv"):
+        # フォルダを作成する
+        os.makedirs("csv", exist_ok=True)
+        df.to_csv(f"csv/{csv_name}", index=False)
+        st.write(f"{csv_name}を出力しました")
+    else:
+        pass
 
     split_methods = [None, "hold_out", "KFold"]
     select_method = st.selectbox("train/test split?", split_methods)
@@ -102,11 +130,6 @@ if __name__ == "__main__":
         page_title="Dataset_Checker",
         page_icon="🧑‍💻",
         layout="wide",
-        initial_sidebar_state="auto",
-        menu_items={
-            "Get Help": "https://www.extremelycoolapp.com/help",
-            "Report a bug": "https://www.extremelycoolapp.com/bug",
-            "About": "# This is a header. This is an *extremely* cool app!",
-        },
     )
+    st.title("Dataset Design Page")
     main()
