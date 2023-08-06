@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app
 
-CMD ["streamlit", "run", "1_📊_ds_design.py"]
+CMD ["streamlit", "run", "1_📊_dataset.py", "--theme.base", "dark"]
